@@ -1,44 +1,41 @@
-import re
-
 secret_code = ['blue', 'red']
 colors = ['blue', 'red', 'yellow', 'green']
 attempt = 0
 
 
 def game(secret_code, attempt):
+    user_colors = []
     attempt = attempt + 1
-    print('Attempt number: '+ str(attempt))
-    
-    user_input = input('Chose 2 colors between blue, red, yellow, green:')
-    user_input_list = re.split(",", user_input)
+    print('Attempt: '+ str(attempt))
 
-    color_is_okay = is_input_a_color(colors, user_input_list)
-    if color_is_okay == True:
-        good_combinasion = is_it_the_combinaison(user_input_list, secret_code)
-        if good_combinasion == True:
-            print('You win!')
-        else:
-            game(secret_code, attempt)
+    choose_color(user_colors)
+    good_answer = is_it_correct(secret_code, user_colors)
+    if good_answer:
+        print('You won in ' + str(attempt) + ' attempts')
     else:
-        game(secret_code, attempt)
-    
+        print('Try again')
+        if attempt <=3:
+            game(secret_code, attempt)
 
 
+def choose_color(user_colors):
+    first_color = input('Choose the first color between red, green, blue and yellow: ')
+    is_input_in_colors(first_color, colors, user_colors)
+    second_color = input('Choose the second color between red, green, blue and yellow: ')
+    is_input_in_colors(second_color, colors, user_colors)
 
-def is_it_the_combinaison(user_input_list, secret_code):
-    for color in secret_code:
-        for user_color in user_input_list:
-            if color == user_color:
-                return True
-            else:
-                return False
-                
 
-def is_input_a_color(colors, user_input_list):
-    if set(colors) & set(user_input_list):
+def is_input_in_colors(color, colors, user_colors):
+    if color in colors:
+        user_colors.append(color)
+    else:
+        input('Choose between red, green, blue and yellow: ')
+
+
+def is_it_correct(secret_code, user_colors):
+    if all(secret_code_list == user_colors_list for secret_code_list, user_colors_list in zip(secret_code, user_colors)):
         return True
     else:
-        print('Choose colors between green, blue, red and yellow')
         return False
-
+    
 game(secret_code, attempt)
